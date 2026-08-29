@@ -4,9 +4,10 @@ receive over the API - no shared generic base, so each schema is readable
 on its own.
 """
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class EmployeeCreate(BaseModel):
@@ -46,3 +47,30 @@ class EmployeeListResponse(BaseModel):
     page: int
     page_size: int
     items: list[EmployeeOut]
+
+
+class SalaryRecordCreate(BaseModel):
+    amount: Decimal = Field(gt=0)
+    effective_date: date
+    reason: Optional[str] = Field(default=None, max_length=200)
+
+    @field_validator("effective_date")
+    @classmethod
+    def effective_date_not_in_future(cls, value):
+        if value > date.today():
+            raise ValueError("effective_date cannot be in the future")
+        return value
+
+
+class SalaryRecordOut(BaseModel):
+    id: int
+    amount: Decimal
+    currency: str
+    effective_date: date
+    reason: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EmployeeDetailOut(EmployeeOut):
+    current_salary: Optional[SalaryRecordOut] = None

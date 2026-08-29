@@ -11,7 +11,15 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Employee
-from app.schemas import EmployeeCreate, EmployeeListResponse, EmployeeOut, EmployeeUpdate
+from app.salary_logic import get_current_salary
+from app.schemas import (
+    EmployeeCreate,
+    EmployeeDetailOut,
+    EmployeeListResponse,
+    EmployeeOut,
+    EmployeeUpdate,
+    SalaryRecordOut,
+)
 
 router = APIRouter(prefix="/api/v1/employees", tags=["employees"])
 
@@ -57,12 +65,17 @@ def list_employees(
     return EmployeeListResponse(total=total, page=page, page_size=page_size, items=items)
 
 
-@router.get("/{employee_id}", response_model=EmployeeOut)
+@router.get("/{employee_id}", response_model=EmployeeDetailOut)
 def get_employee(employee_id: int, db: Session = Depends(get_db)):
     employee = db.get(Employee, employee_id)
     if employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
-    return employee
+
+    current_salary = get_current_salary(db, employee_id)
+    detail = EmployeeDetailOut.model_validate(employee)
+    if current_salary is not None:
+        detail.current_salary = SalaryRecordOut.model_validate(current_salary)
+    return detail
 
 
 @router.post("", response_model=EmployeeOut, status_code=201)
