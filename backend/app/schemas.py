@@ -1,0 +1,48 @@
+"""
+Pydantic request/response models. Plain classes, one per shape we send or
+receive over the API - no shared generic base, so each schema is readable
+on its own.
+"""
+from datetime import date, datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class EmployeeCreate(BaseModel):
+    employee_code: str = Field(min_length=1, max_length=20)
+    name: str = Field(min_length=1, max_length=100)
+    department: str = Field(min_length=1, max_length=50)
+    role: str = Field(min_length=1, max_length=50)
+    country: str = Field(min_length=1, max_length=50)
+    join_date: date
+
+
+class EmployeeUpdate(BaseModel):
+    name: Optional[str] = None
+    department: Optional[str] = None
+    role: Optional[str] = None
+    country: Optional[str] = None
+    join_date: Optional[date] = None
+
+
+class EmployeeOut(BaseModel):
+    id: int
+    employee_code: str
+    name: str
+    department: str
+    role: str
+    country: str
+    join_date: date
+    is_active: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EmployeeListResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    items: list[EmployeeOut]

@@ -5,7 +5,11 @@ FastAPI app entry point. Routers get added here as each phase builds them
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routers import employees
+
 app = FastAPI(title="Employee Salary Management System")
+
+app.include_router(employees.router)
 
 # Wide open for local development; tightened to the real frontend origin
 # when we wire up deployment (Phase 12).
