@@ -84,3 +84,49 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class SalarySummaryItem(BaseModel):
+    group: str
+    currency: str
+    headcount: int
+    average_salary: float
+    median_salary: float
+    min_salary: float
+    max_salary: float
+
+
+class PayBand(BaseModel):
+    range_label: str
+    range_min: float
+    range_max: float
+    headcount: int
+
+
+class DistributionGroup(BaseModel):
+    currency: str
+    bands: list[PayBand]
+
+
+class ExtremeEmployee(BaseModel):
+    employee_id: int
+    employee_code: str
+    name: str
+    department: str
+    role: str
+    country: str
+    amount: float
+    currency: str
+
+
+class ExtremesGroup(BaseModel):
+    currency: str
+    highest: list[ExtremeEmployee]
+    lowest: list[ExtremeEmployee]
+
+
+class HeadcountPayrollItem(BaseModel):
+    country: str
+    currency: str
+    headcount: int
+    total_payroll: float
