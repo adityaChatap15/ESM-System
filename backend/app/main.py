@@ -5,10 +5,11 @@ FastAPI app entry point. Routers get added here as each phase builds them
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import employees, salary
+from app.routers import auth, employees, salary
 
 app = FastAPI(title="Employee Salary Management System")
 
+app.include_router(auth.router)
 app.include_router(employees.router)
 app.include_router(salary.router)
 

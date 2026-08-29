@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.database import get_db
 from app.models import Employee
 from app.salary_logic import get_current_salary
@@ -21,7 +22,11 @@ from app.schemas import (
     SalaryRecordOut,
 )
 
-router = APIRouter(prefix="/api/v1/employees", tags=["employees"])
+router = APIRouter(
+    prefix="/api/v1/employees",
+    tags=["employees"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get("", response_model=EmployeeListResponse)

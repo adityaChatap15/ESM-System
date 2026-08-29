@@ -5,12 +5,17 @@ update - that's what gives us history for free (see app/models.py).
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.constants import currency_for_country
 from app.database import get_db
 from app.models import Employee, SalaryRecord
 from app.schemas import SalaryRecordCreate, SalaryRecordOut
 
-router = APIRouter(prefix="/api/v1/employees", tags=["salary"])
+router = APIRouter(
+    prefix="/api/v1/employees",
+    tags=["salary"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get("/{employee_id}/salary-history", response_model=list[SalaryRecordOut])

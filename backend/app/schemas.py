@@ -74,3 +74,13 @@ class SalaryRecordOut(BaseModel):
 
 class EmployeeDetailOut(EmployeeOut):
     current_salary: Optional[SalaryRecordOut] = None
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
