@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useApi } from '@/lib/useApi'
 
 const PAGE_SIZE = 25
 
 export default function EmployeeListPage() {
   const request = useApi()
+  const navigate = useNavigate()
 
   const [employees, setEmployees] = useState([])
   const [total, setTotal] = useState(0)
@@ -161,7 +163,11 @@ export default function EmployeeListPage() {
               </tr>
             ) : (
               employees.map((employee) => (
-                <tr key={employee.id} className="border-b border-slate-100 last:border-0">
+                <tr
+                  key={employee.id}
+                  onClick={() => navigate(`/employees/${employee.id}`)}
+                  className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                >
                   <td className="px-4 py-3">{employee.employee_code}</td>
                   <td className="px-4 py-3">{employee.name}</td>
                   <td className="px-4 py-3">{employee.department}</td>

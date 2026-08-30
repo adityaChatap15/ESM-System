@@ -3,6 +3,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Layout } from '@/components/Layout'
 import LoginPage from '@/pages/LoginPage'
 import EmployeeListPage from '@/pages/EmployeeListPage'
+import EmployeeDetailPage from '@/pages/EmployeeDetailPage'
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route path="/" element={<EmployeeListPage />} />
+          <Route path="/employees/:id" element={<EmployeeDetailPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
