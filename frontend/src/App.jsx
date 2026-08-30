@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout'
 import LoginPage from '@/pages/LoginPage'
 import EmployeeListPage from '@/pages/EmployeeListPage'
 import EmployeeDetailPage from '@/pages/EmployeeDetailPage'
+import AnalyticsPage from '@/pages/AnalyticsPage'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<EmployeeListPage />} />
           <Route path="/employees/:id" element={<EmployeeDetailPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
