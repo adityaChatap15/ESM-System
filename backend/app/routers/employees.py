@@ -16,6 +16,7 @@ from app.salary_logic import get_current_salary
 from app.schemas import (
     EmployeeCreate,
     EmployeeDetailOut,
+    EmployeeFiltersOut,
     EmployeeListResponse,
     EmployeeOut,
     EmployeeUpdate,
@@ -68,6 +69,19 @@ def list_employees(
     )
 
     return EmployeeListResponse(total=total, page=page, page_size=page_size, items=items)
+
+
+@router.get("/filters", response_model=EmployeeFiltersOut)
+def get_employee_filters(db: Session = Depends(get_db)):
+    """Distinct department/country/role values currently in use, so the
+    frontend's filter dropdowns don't have to hardcode a list that can
+    drift from what's actually in the database. Registered before
+    /{employee_id} below - otherwise FastAPI would treat "filters" as an
+    employee_id path parameter."""
+    departments = [row[0] for row in db.query(Employee.department).distinct().order_by(Employee.department)]
+    countries = [row[0] for row in db.query(Employee.country).distinct().order_by(Employee.country)]
+    roles = [row[0] for row in db.query(Employee.role).distinct().order_by(Employee.role)]
+    return EmployeeFiltersOut(departments=departments, countries=countries, roles=roles)
 
 
 @router.get("/{employee_id}", response_model=EmployeeDetailOut)

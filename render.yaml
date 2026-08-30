@@ -1,0 +1,32 @@
+# Render Blueprint - deploys the backend as a web service plus a managed
+# Postgres database. Frontend is deployed separately on Vercel (see
+# frontend/vercel.json and docs/requirements.md).
+#
+# Usage: Render dashboard -> New -> Blueprint -> point at this repo.
+databases:
+  - name: esm-postgres
+    plan: free
+    databaseName: esm_db
+    user: esm_user
+
+services:
+  - type: web
+    name: esm-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: esm-postgres
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_EXPIRE_MINUTES
+        value: "60"
+      # Update this to the deployed Vercel URL after the frontend is live
+      # (see docs/requirements.md for the deploy order).
+      - key: CORS_ALLOWED_ORIGINS
+        value: "*"

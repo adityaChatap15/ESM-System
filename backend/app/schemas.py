@@ -49,6 +49,12 @@ class EmployeeListResponse(BaseModel):
     items: list[EmployeeOut]
 
 
+class EmployeeFiltersOut(BaseModel):
+    departments: list[str]
+    countries: list[str]
+    roles: list[str]
+
+
 class SalaryRecordCreate(BaseModel):
     amount: Decimal = Field(gt=0)
     effective_date: date

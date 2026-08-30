@@ -74,6 +74,19 @@ def test_update_employee(client):
     assert response.json()["department"] == "Engineering"
 
 
+def test_employee_filters_returns_distinct_sorted_values(client):
+    client.post("/api/v1/employees", json=make_employee_payload("H001", department="Sales", country="India", role="Executive"))
+    client.post("/api/v1/employees", json=make_employee_payload("H002", department="Engineering", country="Germany", role="Engineer"))
+    client.post("/api/v1/employees", json=make_employee_payload("H003", department="Sales", country="India", role="Executive"))
+
+    response = client.get("/api/v1/employees/filters")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["departments"] == ["Engineering", "Sales"]
+    assert body["countries"] == ["Germany", "India"]
+    assert body["roles"] == ["Engineer", "Executive"]
+
+
 def test_deactivate_employee_excluded_from_default_listing(client):
     created = client.post("/api/v1/employees", json=make_employee_payload("E040")).json()
 
